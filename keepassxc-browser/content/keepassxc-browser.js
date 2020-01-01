@@ -303,6 +303,7 @@ kpxcFields.isVisible = function(field) {
 kpxcFields.getAllFields = function() {
     const fields = [];
     const inputs = kpxcObserverHelper.getInputs(document);
+
     for (const i of inputs) {
         if (kpxcFields.isVisible(i) && !kpxcFields.isSearchField(i)) {
             kpxcFields.setUniqueId(i);
@@ -711,7 +712,7 @@ kpxcObserverHelper.handleObserverAdd = function(target) {
         if (Object.keys(kpxc.settings).length === 0) {
             kpxc.init();
         } else {
-            kpxc.initCredentialFields(true);
+            kpxc.initCredentialFields(true, inputs);
         }
     }
 };
@@ -748,7 +749,7 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 // Detects DOM changes in the document
 const observer = new MutationObserver(function(mutations, obs) {
-    if (document.visibilityState === 'hidden') {
+    if (document.visibilityState === 'hidden' || kpxcUI.mouseDown) {
         return;
     }
 
@@ -912,7 +913,7 @@ kpxc.siteIgnored = function(condition) {
     return false;
 };
 
-kpxc.initCredentialFields = async function(forceCall) {
+kpxc.initCredentialFields = async function(forceCall, inputs) {
     if (_called.initCredentialFields && !forceCall) {
         return;
     }
@@ -929,7 +930,12 @@ kpxc.initCredentialFields = async function(forceCall) {
         return;
     }
 
-    const inputs = kpxcFields.getAllFields();
+    //const inputs = kpxcFields.getAllFields();
+    // If target input fields are not defined, get inputs from the whole document
+    if (inputs === undefined) {
+        inputs = kpxcFields.getAllFields();
+    }
+
     if (inputs.length === 0) {
         return;
     }

@@ -36,6 +36,7 @@ class Icon {
 };
 
 const kpxcUI = {};
+kpxcUI.mouseDown = false;
 
 // Wrapper for creating elements
 kpxcUI.createElement = function(type, classes, attributes, textContent) {
@@ -157,6 +158,10 @@ const DOMRectToArray = function(domRect) {
 
 // Enables dragging
 document.addEventListener('mousemove', function(e) {
+    if (!kpxcUI.mouseDown) {
+        return;
+    }
+
     if (kpxcPasswordDialog.selected === kpxcPasswordDialog.titleBar) {
         const xPos = e.clientX - kpxcPasswordDialog.diffX;
         const yPos = e.clientY - kpxcPasswordDialog.diffY;
@@ -178,9 +183,14 @@ document.addEventListener('mousemove', function(e) {
     }
 });
 
+document.addEventListener('mousedown', function() {
+    kpxcUI.mouseDown = true;
+});
+
 document.addEventListener('mouseup', function() {
     kpxcPasswordDialog.selected = null;
     kpxcDefine.selected = null;
+    kpxcUI.mouseDown = false;
 });
 
 HTMLDivElement.prototype.appendMultiple = function(...args) {

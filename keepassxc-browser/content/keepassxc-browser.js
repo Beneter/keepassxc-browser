@@ -747,53 +747,6 @@ kpxcObserverHelper.detectURLChange = function() {
 
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
-// Detects DOM changes in the document
-const observer = new MutationObserver(function(mutations, obs) {
-    if (document.visibilityState === 'hidden' || kpxcUI.mouseDown) {
-        return;
-    }
-
-    for (const mut of mutations) {
-        // Skip text nodes
-        if (mut.target.nodeType === Node.TEXT_NODE) {
-            continue;
-        }
-
-        // Check document URL change and detect new fields
-        kpxcObserverHelper.detectURLChange();
-
-        // Handle attributes only if CSS display is modified
-        if (mut.type === 'attributes') {
-            // Check if some class is changed that folds a form or input field(s)
-            if (mut.attributeName === 'class' && mut.target.querySelectorAll('form input').length > 0) {
-                kpxc.initCredentialFields(true);
-                continue;
-            }
-
-            const newValue = mut.target.getAttribute(mut.attributeName);
-            if (newValue && (newValue.includes('display') || newValue.includes('z-index'))) {
-                if (mut.target.style.display !== 'none') {
-                    kpxcObserverHelper.handleObserverAdd(mut.target);
-                } else {
-                    kpxcObserverHelper.handleObserverRemove(mut.target);
-                }
-            }
-        } else if (mut.type === 'childList') {
-            kpxcObserverHelper.handleObserverAdd((mut.addedNodes.length > 0) ? mut.addedNodes[0] : mut.target);
-            kpxcObserverHelper.handleObserverRemove((mut.removedNodes.length > 0) ? mut.removedNodes[0] : mut.target);
-        }
-    }
-});
-
-// define what element should be observed by the observer
-// and what types of mutations trigger the callback
-observer.observe(document, {
-    subtree: true,
-    attributes: true,
-    childList: true,
-    characterData: true,
-    attributeFilter: [ 'style', 'class' ]
-});
 
 const kpxc = {};
 kpxc.settings = {};
@@ -810,6 +763,13 @@ const initcb = async function() {
         });
 
         kpxc.settings = settings;
+
+        // Don't initialize MutationObserver if the site is ignored
+        if (kpxc.siteIgnored()) {
+            return;
+        }
+
+        kpxc.initObserver();
         await kpxc.initCredentialFields();
 
         // Retrieve submitted credentials if available.
@@ -842,6 +802,56 @@ if (document.readyState === 'complete' || (document.readyState !== 'loading' && 
 
 kpxc.init = function() {
     initcb();
+};
+
+// Detects DOM changes in the document
+kpxc.initObserver = function() {
+    const observer = new MutationObserver(function(mutations, obs) {
+        if (document.visibilityState === 'hidden' || kpxcUI.mouseDown) {
+            return;
+        }
+    
+        for (const mut of mutations) {
+            // Skip text nodes
+            if (mut.target.nodeType === Node.TEXT_NODE) {
+                continue;
+            }
+    
+            // Check document URL change and detect new fields
+            kpxcObserverHelper.detectURLChange();
+    
+            // Handle attributes only if CSS display is modified
+            if (mut.type === 'attributes') {
+                // Check if some class is changed that folds a form or input field(s)
+                if (mut.attributeName === 'class' && mut.target.querySelectorAll('form input').length > 0) {
+                    kpxc.initCredentialFields(true);
+                    continue;
+                }
+    
+                const newValue = mut.target.getAttribute(mut.attributeName);
+                if (newValue && (newValue.includes('display') || newValue.includes('z-index'))) {
+                    if (mut.target.style.display !== 'none') {
+                        kpxcObserverHelper.handleObserverAdd(mut.target);
+                    } else {
+                        kpxcObserverHelper.handleObserverRemove(mut.target);
+                    }
+                }
+            } else if (mut.type === 'childList') {
+                kpxcObserverHelper.handleObserverAdd((mut.addedNodes.length > 0) ? mut.addedNodes[0] : mut.target);
+                kpxcObserverHelper.handleObserverRemove((mut.removedNodes.length > 0) ? mut.removedNodes[0] : mut.target);
+            }
+        }
+    });
+    
+    // define what element should be observed by the observer
+    // and what types of mutations trigger the callback
+    observer.observe(document, {
+        subtree: true,
+        attributes: true,
+        childList: true,
+        characterData: true,
+        attributeFilter: [ 'style', 'class' ]
+    });
 };
 
 // Clears all from the content and background scripts, including autocomplete

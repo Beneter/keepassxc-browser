@@ -24,6 +24,7 @@ _called.manualFillRequested = ManualFill.NONE;
 let _singleInputEnabledForPage = false;
 let _databaseClosed = true;
 const _maximumInputs = 100;
+const _maximumMutations = 200;
 
 // Count of detected form fields on the page
 var _detectedFields = 0;
@@ -810,7 +811,12 @@ kpxc.initObserver = function() {
         if (document.visibilityState === 'hidden' || kpxcUI.mouseDown) {
             return;
         }
-    
+
+        // Limit the mutation handling
+        if (mutations.length > _maximumMutations) {
+            return mutations.slice(0, _maximumMutations);
+        }
+
         for (const mut of mutations) {
             // Skip text nodes
             if (mut.target.nodeType === Node.TEXT_NODE) {
@@ -940,7 +946,6 @@ kpxc.initCredentialFields = async function(forceCall, inputs) {
         return;
     }
 
-    //const inputs = kpxcFields.getAllFields();
     // If target input fields are not defined, get inputs from the whole document
     if (inputs === undefined) {
         inputs = kpxcFields.getAllFields();
@@ -997,9 +1002,13 @@ kpxc.initCredentialFields = async function(forceCall, inputs) {
 };
 
 kpxc.initPasswordGenerator = function(inputs) {
+    if (!kpxc.settings.usePasswordGeneratorIcons) {
+        return;
+    }
+
     for (let i = 0; i < inputs.length; i++) {
         if (inputs[i] && inputs[i].getLowerCaseAttribute('type') === 'password') {
-            kpxcPasswordIcons.newIcon(kpxc.settings.usePasswordGeneratorIcons, inputs[i], inputs, i, _databaseClosed);
+            kpxcPasswordIcons.newIcon(true, inputs[i], inputs, i, _databaseClosed);
         }
     }
 };

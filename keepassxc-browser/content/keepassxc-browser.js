@@ -814,7 +814,7 @@ kpxc.initObserver = function() {
 
         // Limit the mutation handling
         if (mutations.length > _maximumMutations) {
-            return mutations.slice(0, _maximumMutations);
+            mutations.slice(0, _maximumMutations);
         }
 
         for (const mut of mutations) {

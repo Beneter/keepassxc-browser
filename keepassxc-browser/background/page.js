@@ -1,21 +1,22 @@
 'use strict';
 
 const defaultSettings = {
-    checkUpdateKeePassXC: 3,
     autoCompleteUsernames: true,
     autoFillAndSend: false,
-    usePasswordGeneratorIcons: false,
     autoFillSingleEntry: false,
-    autoSubmit: false,
-    autoRetrieveCredentials: true,
-    showNotifications: true,
-    showLoginNotifications: true,
-    showLoginFormIcon: true,
-    showOTPIcon: true,
-    saveDomainOnly: true,
     autoReconnect: false,
+    autoRetrieveCredentials: true,
+    autoSubmit: false,
+    checkUpdateKeePassXC: 3,
     defaultGroup: '',
-    defaultGroupAlwaysAsk: false
+    defaultGroupAlwaysAsk: false,
+    saveDomainOnly: true,
+    showLoginFormIcon: true,
+    showLoginNotifications: true,
+    showNotifications: true,
+    showOTPIcon: true,
+    useObserver: true,
+    usePasswordGeneratorIcons: false
 };
 
 var page = {};
@@ -33,50 +34,68 @@ page.initSettings = async function() {
         const item = await browser.storage.local.get({ 'settings': {} });
         page.settings = item.settings;
 
-        if (!('checkUpdateKeePassXC' in page.settings)) {
-            page.settings.checkUpdateKeePassXC = defaultSettings.checkUpdateKeePassXC;
-        }
         if (!('autoCompleteUsernames' in page.settings)) {
             page.settings.autoCompleteUsernames = defaultSettings.autoCompleteUsernames;
         }
+
         if (!('autoFillAndSend' in page.settings)) {
             page.settings.autoFillAndSend = defaultSettings.autoFillAndSend;
         }
-        if (!('usePasswordGeneratorIcons' in page.settings)) {
-            page.settings.usePasswordGeneratorIcons = defaultSettings.usePasswordGeneratorIcons;
-        }
+
         if (!('autoFillSingleEntry' in page.settings)) {
             page.settings.autoFillSingleEntry = defaultSettings.autoFillSingleEntry;
         }
-        if (!('autoSubmit' in page.settings)) {
-            page.settings.autoSubmit = defaultSettings.autoSubmit;
-        }
-        if (!('autoRetrieveCredentials' in page.settings)) {
-            page.settings.autoRetrieveCredentials = defaultSettings.autoRetrieveCredentials;
-        }
-        if (!('showNotifications' in page.settings)) {
-            page.settings.showNotifications = defaultSettings.showNotifications;
-        }
-        if (!('showLoginNotifications' in page.settings)) {
-            page.settings.showLoginNotifications = defaultSettings.showLoginNotifications;
-        }
-        if (!('showLoginFormIcon' in page.settings)) {
-            page.settings.showLoginFormIcon = defaultSettings.showLoginFormIcon;
-        }
-        if (!('showOTPIcon' in page.settings)) {
-            page.settings.showOTPIcon = defaultSettings.showOTPIcon;
-        }
-        if (!('saveDomainOnly' in page.settings)) {
-            page.settings.saveDomainOnly = defaultSettings.saveDomainOnly;
-        }
+
         if (!('autoReconnect' in page.settings)) {
             page.settings.autoReconnect = defaultSettings.autoReconnect;
         }
+
+        if (!('autoRetrieveCredentials' in page.settings)) {
+            page.settings.autoRetrieveCredentials = defaultSettings.autoRetrieveCredentials;
+        }
+
+        if (!('autoSubmit' in page.settings)) {
+            page.settings.autoSubmit = defaultSettings.autoSubmit;
+        }
+
+        if (!('checkUpdateKeePassXC' in page.settings)) {
+            page.settings.checkUpdateKeePassXC = defaultSettings.checkUpdateKeePassXC;
+        }
+
         if (!('defaultGroup' in page.settings)) {
             page.settings.defaultGroup = defaultSettings.defaultGroup;
         }
+
         if (!('defaultGroupAlwaysAsk' in page.settings)) {
             page.settings.defaultGroupAlwaysAsk = defaultSettings.defaultGroupAlwaysAsk;
+        }
+
+        if (!('saveDomainOnly' in page.settings)) {
+            page.settings.saveDomainOnly = defaultSettings.saveDomainOnly;
+        }
+
+        if (!('showLoginFormIcon' in page.settings)) {
+            page.settings.showLoginFormIcon = defaultSettings.showLoginFormIcon;
+        }
+
+        if (!('showLoginNotifications' in page.settings)) {
+            page.settings.showLoginNotifications = defaultSettings.showLoginNotifications;
+        }
+
+        if (!('showNotifications' in page.settings)) {
+            page.settings.showNotifications = defaultSettings.showNotifications;
+        }
+    
+        if (!('showOTPIcon' in page.settings)) {
+            page.settings.showOTPIcon = defaultSettings.showOTPIcon;
+        }
+
+        if (!('useObserver' in page.settings)) {
+            page.settings.useObserver = defaultSettings.useObserver;
+        }
+
+        if (!('usePasswordGeneratorIcons' in page.settings)) {
+            page.settings.usePasswordGeneratorIcons = defaultSettings.usePasswordGeneratorIcons;
         }
 
         await browser.storage.local.set({ 'settings': page.settings });

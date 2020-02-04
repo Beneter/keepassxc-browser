@@ -770,7 +770,10 @@ const initcb = async function() {
             return;
         }
 
-        kpxc.initObserver();
+        if (kpxc.settings.useObserver) {
+            kpxc.initObserver();
+        }
+
         await kpxc.initCredentialFields();
 
         // Retrieve submitted credentials if available.

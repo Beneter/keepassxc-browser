@@ -580,7 +580,7 @@
         "description": "Use dynamic input field detection checkbox text."
     },
     "optionsUseObserverHelpText": {
-        "message": "Useful with pages that use popups or dynamic dialogs. Disable the feature to reduce CPU load on slower machines. When disabled credentials can be only inserted using keyboard shortcuts or the context menu.",
+        "message": "Useful with pages that use popups or dynamic dialogs. Disable the feature to reduce CPU load on slower machines. When disabled credentials can be only inserted using keyboard shortcuts, the context menu or the extension popup.",
         "description": "Use dynamic input field detection help text."
     },
     "optionsCheckboxOTPIcons": {
